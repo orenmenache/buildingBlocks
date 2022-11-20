@@ -36,7 +36,7 @@ const GET = {
              * @param name
              * @returns
              */
-            inCollection<T>(
+            inCollection<T extends _ItemClasses | Layer>(
                 collection: ItemCollection | LayerCollection,
                 name: string
             ): T | false {
@@ -55,7 +55,7 @@ const GET = {
              * @param name
              * @returns
              */
-            inCollection_TOF<T>(
+            inCollection_TOF<T extends _ItemClasses | Layer>(
                 collection: ItemCollection | LayerCollection,
                 name: string
             ): T {
