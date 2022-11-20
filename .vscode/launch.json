@@ -9,6 +9,7 @@
             "request": "launch",
             "name": "Ask for script name",
             "script": "${workspaceFolder}\\build\\test.js"
+            //"script": "${workspaceFolder}\\build\\config\\RUNONCE.js"
         }
     ]
 }
