@@ -1,5 +1,5 @@
 const IMPORT = {
-    fromPath(filePath: string, importBin: FolderItem) {
+    fromPath_TOF(filePath: string, importBin: FolderItem): _ItemClasses {
         try {
             const file = File(filePath);
             if (!file.exists) throw new Error(`File ${filePath} doesn't exist`);
@@ -8,10 +8,10 @@ const IMPORT = {
             importedFile.parentFolder = importBin;
             return importedFile;
         } catch (e: any) {
-            throw new Error(`Failed to import single file: ${e.message}`);
+            throw new Error(`IMPORT.fromPath_TOF: ${e.message}`);
         }
     },
-    fromFile(file: File, importBin: FolderItem) {
+    fromFile_TOF(file: File, importBin: FolderItem) {
         try {
             if (!file.exists)
                 throw new Error(`File ${file.name} doesn't exist`);
@@ -20,7 +20,7 @@ const IMPORT = {
             importedFile.parentFolder = importBin;
             return importedFile;
         } catch (e: any) {
-            throw new Error(`Failed to import single file: ${e.message}`);
+            throw new Error(`IMPORT.fromFile_TOF: ${e.message}`);
         }
     },
 };
