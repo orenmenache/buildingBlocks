@@ -77,6 +77,36 @@ var GET = {
                 }
                 return resArr;
             }
+        },
+        LABEL: {
+            inCollection_TOF: function (collection, labelNum) {
+                try {
+                    var filtered = [];
+                    for (var i = 1; i <= collection.length; i++) {
+                        var layer = collection[i];
+                        if (layer.label === labelNum)
+                            filtered.push(layer);
+                    }
+                    return filtered;
+                }
+                catch (e) {
+                    throw new Error("GET.BY.label.inCollection_TOF: " + e.message + "\nLine: " + e.line);
+                }
+            },
+            inArray_TOF: function (layerArr, labelNum) {
+                try {
+                    var filtered = [];
+                    for (var _i = 0, layerArr_1 = layerArr; _i < layerArr_1.length; _i++) {
+                        var layer = layerArr_1[_i];
+                        if (layer.label === labelNum)
+                            filtered.push(layer);
+                    }
+                    return filtered;
+                }
+                catch (e) {
+                    throw new Error("GET.BY.label.inArray_TOF: " + e.message + "\nLine: " + e.line);
+                }
+            }
         }
     },
     /**

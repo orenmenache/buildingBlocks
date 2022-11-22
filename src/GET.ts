@@ -99,6 +99,41 @@ const GET = {
                 return resArr;
             },
         },
+        LABEL: {
+            inCollection_TOF(
+                collection: LayerCollection,
+                labelNum: number
+            ): Layer[] {
+                try {
+                    let filtered: Layer[] = [];
+                    for (let i = 1; i <= collection.length; i++) {
+                        let layer: Layer = collection[i];
+                        if (layer.label === labelNum) filtered.push(layer);
+                    }
+                    return filtered;
+                } catch (e: any) {
+                    throw new Error(
+                        `GET.BY.label.inCollection_TOF: ${e.message}\nLine: ${e.line}`
+                    );
+                }
+            },
+            inArray_TOF<T extends Layer | AVLayer | TextLayer>(
+                layerArr: T[],
+                labelNum: number
+            ): T[] {
+                try {
+                    let filtered: T[] = [];
+                    for (let layer of layerArr) {
+                        if (layer.label === labelNum) filtered.push(layer);
+                    }
+                    return filtered;
+                } catch (e: any) {
+                    throw new Error(
+                        `GET.BY.label.inArray_TOF: ${e.message}\nLine: ${e.line}`
+                    );
+                }
+            },
+        },
     },
     /**
      * Get all items
