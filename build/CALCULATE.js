@@ -4,6 +4,7 @@ var CALCULATE = {
      * Rounds to 2 decimals after .
      */
     percentageChange: function (fromNum, toNum) {
+        // checking something
         var percentageChange = (Math.round((toNum / fromNum) * 10000) - 10000) / 100;
         var percentStr = percentageChange.toString();
         // Chop off excess decimals

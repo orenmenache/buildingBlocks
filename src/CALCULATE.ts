@@ -3,6 +3,7 @@ const CALCULATE = {
      * Rounds to 2 decimals after .
      */
     percentageChange(fromNum: number, toNum: number): string {
+        // checking something
         const percentageChange =
             (Math.round((toNum / fromNum) * 10000) - 10000) / 100;
         let percentStr = percentageChange.toString();
