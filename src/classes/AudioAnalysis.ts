@@ -91,6 +91,25 @@ class AudioAnalysis {
         }
     }
     getMaxOutPoint() {}
+    /**
+     * Addition
+     * 01/12/22
+     */
+    trim(padding: any) {
+        this.setIn(padding.inn);
+        this.setOut(padding.out);
+    }
+    private setIn(pad: number = 0) {
+        const paddedIn = this.in - pad;
+        if (pad < 0) {
+            pad = 0;
+        }
+        this.layer.inPoint = pad;
+    }
+    private setOut(pad: number = 0) {
+        const paddedOut = this.out + pad;
+        this.layer.outPoint = paddedOut;
+    }
 }
 
 // function getMaxOutPoint(layer, layerComp) {
