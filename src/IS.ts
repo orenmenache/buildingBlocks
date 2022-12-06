@@ -13,4 +13,10 @@ const IS = {
     textLayer(layer: AVLayer): boolean {
         return layer.toString() == '[object TextLayer]';
     },
+    legitFileName(fileName: string, fileTypes: string[]) {
+        for (let fileType of fileTypes) {
+            if (fileName.toLowerCase().indexOf(fileType) > -1) return true;
+        }
+        return false;
+    },
 };

@@ -113,36 +113,105 @@ var GET = {
      * Get all items
      */
     ALL: {
-        compItems: function (proj) {
-            return GET.BY.TYPE.inItemCollection(proj.items, 'Composition');
+        ITEMS: {
+            comps: function (proj) {
+                return GET.BY.TYPE.inItemCollection(proj.items, 'Composition');
+            },
+            folders: function (proj) {
+                return GET.BY.TYPE.inItemCollection(proj.items, 'Folder');
+            },
+            footage: function (proj) {
+                return GET.BY.TYPE.inItemCollection(proj.items, 'Footage');
+            }
         },
-        folderItems: function (proj) {
-            return GET.BY.TYPE.inItemCollection(proj.items, 'Folder');
-        },
-        footageItems: function (proj) {
-            return GET.BY.TYPE.inItemCollection(proj.items, 'Footage');
-        },
-        AVLayers: function (comp) {
-            var layers = comp.layers;
-            var avLayers = [];
-            for (var i = 1; i <= layers.length; i++) {
-                var layer = layers[i];
-                if (IS.avLayer(layer)) {
-                    avLayers.push(layer);
+        LAYERS: {
+            inAllComps: function (comps) {
+                var allLayers = [];
+                for (var _i = 0, comps_1 = comps; _i < comps_1.length; _i++) {
+                    var comp = comps_1[_i];
+                    var layers = comp.layers;
+                    for (var i = 1; i <= layers.length; i++) {
+                        allLayers.push(layers[i]);
+                    }
+                }
+                return allLayers;
+            },
+            AV: function (comp) {
+                var layers = comp.layers;
+                var avLayers = [];
+                for (var i = 1; i <= layers.length; i++) {
+                    var layer = layers[i];
+                    if (IS.avLayer(layer)) {
+                        avLayers.push(layer);
+                    }
+                }
+                return avLayers;
+            },
+            Comp: function (comp) {
+                var layers = comp.layers;
+                var compLayers = [];
+                for (var i = 1; i <= layers.length; i++) {
+                    var layer = layers[i];
+                    if (IS.compLayer(layer)) {
+                        compLayers.push(layer);
+                    }
+                }
+                return compLayers;
+            },
+            Text: function (comp) {
+                var layers = comp.layers;
+                var textLayers = [];
+                for (var i = 1; i <= layers.length; i++) {
+                    var layer = layers[i];
+                    if (IS.avLayer(layer)) {
+                        textLayers.push(layer);
+                    }
+                }
+                return textLayers;
+            },
+            /**
+             * get all layers recursively in a composition by
+             * the three main types: Comp, AV, Text
+             * @param comp
+             */
+            byTypeRec_TOF: function (comp) {
+                try {
+                    var layersByType = {
+                        Comp: this.CompRec_TOF(comp),
+                        AV: [],
+                        Text: []
+                    };
+                    for (var _i = 0, _a = layersByType.Comp; _i < _a.length; _i++) {
+                        var compLayer = _a[_i];
+                        var comp_1 = compLayer.source;
+                        layersByType.AV = layersByType.AV.concat(GET.ALL.LAYERS.AV(comp_1));
+                        layersByType.Text = layersByType.Text.concat(GET.ALL.LAYERS.Text(comp_1));
+                    }
+                }
+                catch (e) {
+                    throw new Error("byTypeRec_TOF: " + e);
+                }
+            },
+            /**
+             * get all compLayers recursively in a composition
+             * @param comp
+             */
+            CompRec_TOF: function (comp) {
+                try {
+                    var comps = [];
+                    for (var i = 1; i <= comp.layers.length; i++) {
+                        var layer = comp.layers[i];
+                        if (IS.compLayer(layer)) {
+                            comps.push(layer);
+                            comps = comps.concat(this.CompRec_TOF(layer.source));
+                        }
+                    }
+                    return comps;
+                }
+                catch (e) {
+                    throw new Error("CompRec_TOF: " + e);
                 }
             }
-            return avLayers;
-        },
-        TextLayers: function (comp) {
-            var layers = comp.layers;
-            var textLayers = [];
-            for (var i = 1; i <= layers.length; i++) {
-                var layer = layers[i];
-                if (IS.avLayer(layer)) {
-                    textLayers.push(layer);
-                }
-            }
-            return textLayers;
         }
     },
     TEXT: {

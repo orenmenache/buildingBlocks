@@ -139,45 +139,116 @@ const GET = {
      * Get all items
      */
     ALL: {
-        compItems(proj: Project): CompItem[] {
-            return GET.BY.TYPE.inItemCollection<CompItem>(
-                proj.items,
-                'Composition'
-            );
+        ITEMS: {
+            comps(proj: Project): CompItem[] {
+                return GET.BY.TYPE.inItemCollection<CompItem>(
+                    proj.items,
+                    'Composition'
+                );
+            },
+            folders(proj: Project): FolderItem[] {
+                return GET.BY.TYPE.inItemCollection<FolderItem>(
+                    proj.items,
+                    'Folder'
+                );
+            },
+            footage(proj: Project): FootageItem[] {
+                return GET.BY.TYPE.inItemCollection<FootageItem>(
+                    proj.items,
+                    'Footage'
+                );
+            },
         },
-        folderItems(proj: Project): FolderItem[] {
-            return GET.BY.TYPE.inItemCollection<FolderItem>(
-                proj.items,
-                'Folder'
-            );
-        },
-        footageItems(proj: Project): FootageItem[] {
-            return GET.BY.TYPE.inItemCollection<FootageItem>(
-                proj.items,
-                'Footage'
-            );
-        },
-        AVLayers(comp: CompItem): AVLayer[] {
-            const layers: LayerCollection = comp.layers;
-            let avLayers: AVLayer[] = [];
-            for (let i = 1; i <= layers.length; i++) {
-                let layer = layers[i] as AVLayer;
-                if (IS.avLayer(layer)) {
-                    avLayers.push(layer);
+        LAYERS: {
+            inAllComps(comps: CompItem[]): Layer[] {
+                let allLayers: Layer[] = [];
+                for (let comp of comps) {
+                    let layers = comp.layers;
+                    for (let i = 1; i <= layers.length; i++) {
+                        allLayers.push(layers[i]);
+                    }
                 }
-            }
-            return avLayers;
-        },
-        TextLayers(comp: CompItem): TextLayer[] {
-            const layers: LayerCollection = comp.layers;
-            let textLayers: TextLayer[] = [];
-            for (let i = 1; i <= layers.length; i++) {
-                let layer = layers[i] as TextLayer;
-                if (IS.avLayer(layer)) {
-                    textLayers.push(layer);
+                return allLayers;
+            },
+            AV(comp: CompItem): AVLayer[] {
+                const layers: LayerCollection = comp.layers;
+                let avLayers: AVLayer[] = [];
+                for (let i = 1; i <= layers.length; i++) {
+                    let layer = layers[i] as AVLayer;
+                    if (IS.avLayer(layer)) {
+                        avLayers.push(layer);
+                    }
                 }
-            }
-            return textLayers;
+                return avLayers;
+            },
+            Comp(comp: CompItem): AVLayer[] {
+                const layers: LayerCollection = comp.layers;
+                let compLayers: AVLayer[] = [];
+                for (let i = 1; i <= layers.length; i++) {
+                    let layer = layers[i] as AVLayer;
+                    if (IS.compLayer(layer)) {
+                        compLayers.push(layer);
+                    }
+                }
+                return compLayers;
+            },
+            Text(comp: CompItem): TextLayer[] {
+                const layers: LayerCollection = comp.layers;
+                let textLayers: TextLayer[] = [];
+                for (let i = 1; i <= layers.length; i++) {
+                    let layer = layers[i] as TextLayer;
+                    if (IS.avLayer(layer)) {
+                        textLayers.push(layer);
+                    }
+                }
+                return textLayers;
+            },
+            /**
+             * get all layers recursively in a composition by
+             * the three main types: Comp, AV, Text
+             * @param comp
+             */
+            byTypeRec_TOF(comp: CompItem) {
+                try {
+                    let layersByType = {
+                        Comp: this.CompRec_TOF(comp),
+                        AV: [] as AVLayer[],
+                        Text: [] as TextLayer[],
+                    };
+                    for (let compLayer of layersByType.Comp) {
+                        let comp: CompItem = compLayer.source;
+                        layersByType.AV = layersByType.AV.concat(
+                            GET.ALL.LAYERS.AV(comp)
+                        );
+                        layersByType.Text = layersByType.Text.concat(
+                            GET.ALL.LAYERS.Text(comp)
+                        );
+                    }
+                } catch (e: any) {
+                    throw new Error(`byTypeRec_TOF: ${e}`);
+                }
+            },
+            /**
+             * get all compLayers recursively in a composition
+             * @param comp
+             */
+            CompRec_TOF(comp: CompItem): AVLayer[] {
+                try {
+                    let comps: AVLayer[] = [];
+                    for (let i = 1; i <= comp.layers.length; i++) {
+                        let layer = comp.layers[i] as AVLayer;
+                        if (IS.compLayer(layer)) {
+                            comps.push(layer);
+                            comps = comps.concat(
+                                this.CompRec_TOF(layer.source)
+                            );
+                        }
+                    }
+                    return comps;
+                } catch (e: any) {
+                    throw new Error(`CompRec_TOF: ${e}`);
+                }
+            },
         },
     },
     TEXT: {
