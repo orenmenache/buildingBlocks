@@ -95,9 +95,9 @@ class AudioAnalysis {
      * Addition
      * 01/12/22
      */
-    trim(padding: any) {
-        this.setIn(padding.inn);
-        this.setOut(padding.out);
+    trim(paddingIn: number, paddingOut: number) {
+        this.setIn(paddingIn);
+        this.setOut(paddingOut);
     }
     private setIn(pad: number = 0) {
         const paddedIn = this.in - pad;

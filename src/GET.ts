@@ -249,6 +249,15 @@ const GET = {
                     throw new Error(`CompRec_TOF: ${e}`);
                 }
             },
+            byLabel(layers: LayerCollection,label: number): Layer[] {
+                var res = [];
+                for (let i = 1; i <= layers.length; i++){
+                    if (layers[i].label === label){
+                        res.push(layers[i]);
+                    }
+                }
+                return res;
+            }
         },
     },
     TEXT: {
@@ -365,6 +374,18 @@ const GET = {
             } catch (e: any) {
                 throw new Error(`GET.MARKER.firstTime_TOF: ${e.message}`);
             }
+        },
+        /**
+         * get the time gap between marker position and layer start time
+         * @param layer 
+         * @param marker 
+         * @param markerIndex 
+         * @returns 
+         */
+        startGap(layer: AVLayer, marker: Property, markerIndex: number = 1){
+            var markerTime = marker.keyTime(markerIndex);
+            var gap = markerTime-layer.startTime;
+            return gap;
         },
     },
 };
